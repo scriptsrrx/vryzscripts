@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VRYZ Scripts | Domina Roblox</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #06060c;
+            --card-bg: #111119;
+            --primary-neon: #ff00ff; /* Magenta */
+            --secondary-neon: #00ffff; /* Cian */
+            --text-main: #ffffff;
+            --text-muted: #888899;
+            --btn-grad: linear-gradient(90deg, #ff00ff 0%, #00ffff 100%);
+            --whatsapp-green: #25D366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            user-select: none; /* Evita seleccionar texto al hacer clic */
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Canvas para Efecto Rainbow --- */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none; /* No interfiere con los clics */
+            z-index: 9999;
+        }
+
+        /* --- Utilidades --- */
+        .neon-text-multicolor {
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .badg-updated {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--secondary-neon);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* --- Header / Nav --- */
+        header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(6, 6, 12, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary-neon);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-nav-wa {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 120px 20px 60px;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, #151525 0%, #06060c 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-main {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 15px 35px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--btn-grad);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #1a1a2a;
+            color: var(--secondary-neon);
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            transform: translateY(-3px);
+        }
+
+        /* --- Stats Section --- */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 40px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--secondary-neon);
+        }
+
+        .stat-num.magenta {
+            color: var(--primary-neon);
+        }
+
+        .stat-desc {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* --- Catálogo / Productos --- */
+        .catalog {
+            padding: 60px 20px;
+        }
+
+        .catalog-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .cat-tag {
+            background: #1a1a2a;
+            color: var(--primary-neon);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .catalog h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .catalog h2 span {
+            color: var(--secondary-neon);
+        }
+
+        .grid-products {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.03);
+            position: relative;
+        }
+
+        .game-tag {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .tag-premium {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--secondary-neon);
+        }
+
+        .tag-vip {
+            background: rgba(255, 0, 255, 0.1);
+            color: var(--primary-neon);
+        }
+
+        .tag-free {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .game-icon {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
+        }
+
+        .game-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .script-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .features-list {
+            list-style: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .features-list li i {
+            color: var(--secondary-neon);
+            font-size: 0.8rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .price.free {
+            color: var(--primary-neon);
+        }
+
+        .btn-buy {
+            background: var(--btn-grad);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer-logo {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--secondary-neon);
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- Responsivo para Tablets/PC --- */
+        @media (min-width: 768px) {
+            .grid-products {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 1000px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <header>
+        <div class="logo">
+            <i class="fas fa-code"></i>
+            VRYZ Scripts
+        </div>
+        <a href="https://wa.me/584122064697" class="btn-nav-wa">
+            <i class="fab fa-whatsapp"></i>
+            WhatsApp
+        </a>
+    </header>
+
+    <section class="hero">
+        <div class="badg-updated">
+            <i class="fas fa-sparkles"></i>
+            Scripts actualizados todas las semanas
+        </div>
+        <h1>Domina <span class="neon-text-multicolor">Roblox</span> con scripts premium.</h1>
+        <p>Hubs indetectables, auto farm, ESP y más. Compra al instante por WhatsApp y recibe tu script en minutos.</p>
+        
+        <div class="btn-main">
+            <a href="#catalogo" class="btn-primary">
+                <i class="fas fa-rocket"></i>
+                Ver catálogo
+            </a>
+            <a href="https://wa.me/584122064697?text=Hola%20VRYZ,%20quiero%20contactar%20con%20soporte." class="btn-secondary">
+                <i class="fas fa-comment-alt"></i>
+                Contactar ahora
+            </a>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-item">
+            <div class="stat-num">+2.500</div>
+            <div class="stat-desc">clientes felices</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num magenta">+50</div>
+            <div class="stat-desc">scripts disponibles</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">24/7</div>
+            <div class="stat-desc">soporte por WhatsApp</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num magenta">99%</div>
+            <div class="stat-desc">tasa indetección</div>
+        </div>
+    </section>
+
+    <section id="catalogo" class="catalog">
+        <div class="catalog-header">
+            <div class="cat-tag">Catálogo</div>
+            <h2>Scripts para tus <span>juegos favoritos</span></h2>
+            <p>Toca un script y te llevamos directo a WhatsApp para finalizar tu compra.</p>
+        </div>
+
+        <div class="grid-products">
+            <div class="product-card">
+                <div class="game-tag tag-premium">Premium</div>
+                <img src="https://img.icons8.com/emoji/96/apple-emoji.png" alt="Blox Fruits" class="game-icon">
+                <div class="game-name">Blox Fruits</div>
+                <h3 class="script-title">Blox Fruits Ultimate Hub</h3>
+                <ul class="features-list">
+                    <li><i class="fas fa-bolt"></i> Auto Farm Level</li>
+                    <li><i class="fas fa-bolt"></i> Devil Fruit ESP</li>
+                    <li><i class="fas fa-bolt"></i> Auto Raid</li>
+                    <li><i class="fas fa-bolt"></i> Anti-Ban</li>
+                </ul>
+                <div class="card-footer">
+                    <div class="price">$4.99</div>
+                    <a href="https://wa.me/584122064697?text=Hola%20VRYZ,%20quiero%20comprar%20el%20script%20de%20Blox%20Fruits." class="btn-buy">
+                        <i class="fab fa-whatsapp"></i>
+                        Comprar
+                    </a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="game-tag tag-free">Free</div>
+                <img src="https://img.icons8.com/emoji/96/direct-hit.png" alt="Arsenal" class="game-icon">
+                <div class="game-name">Arsenal</div>
+                <h3 class="script-title">Arsenal AimBot X</h3>
+                <ul class="features-list">
+                    <li><i class="fas fa-bolt"></i> Silent Aim</li>
+                    <li><i class="fas fa-bolt"></i> ESP Players</li>
+                    <li><i class="fas fa-bolt"></i> No Recoil</li>
+                    <li><i class="fas fa-bolt"></i> Wallbang</li>
+                </ul>
+                <div class="card-footer">
+                    <div class="price free">Gratis</div>
+                    <a href="https://wa.me/584122064697?text=Hola%20VRYZ,%20quiero%20el%20script%20gratis%20de%20Arsenal." class="btn-buy">
+                        <i class="fab fa-whatsapp"></i>
+                        Obtener
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">
+            <i class="fas fa-code"></i>
+            VRYZ Scripts
+        </div>
+        <p>© 2026</p>
+        <p>Sitio sin afiliación oficial con Roblox Corporation.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 8 + 4; // Tamaño de las bolas
+                this.speedX = (Math.random() - 0.5) * 8; // Velocidad horizontal
+                this.speedY = (Math.random() - 0.5) * 8; // Velocidad vertical
+                this.hue = Math.random() * 360; // Color inicial aleatorio
+                this.alpha = 1; // Opacidad
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.hue += 5; // Cambia el color continuamente (efecto rainbow)
+                this.alpha -= 0.02; // Se desvanece
+            }
+
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        window.addEventListener('mousedown', (e) => {
+            // Crea exactamente 5 partículas donde se hizo clic
+            for (let i = 0; i < 5; i++) {
+                particles.push(new Particle(e.clientX, e.clientY));
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                // Elimina la partícula si ya no es visible
+                if (particles[i].alpha <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+
+</body>
+</html>
